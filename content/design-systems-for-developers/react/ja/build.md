@@ -1,57 +1,57 @@
 ---
-title: 'Build UI components'
-tocTitle: 'Build'
-description: 'Setup Storybook to build and catalog design system components'
+title: 'UI コンポーネントをビルドする'
+tocTitle: 'ビルド'
+description: 'デザインシステムのコンポーネントをビルドしカタログ化するために Storybook をセットアップする'
 commit: e7b6f00
 ---
 
-In chapter 3 we’ll set up the essential design system tooling starting with Storybook, the most popular component explorer. The goal of this guide is to show you how professional teams build design systems, so we’ll also focus on finer details like the code hygiene, timesaving Storybook addons, and directory structure.
+第 3 章では、人気の高いコンポーネントのビューアーである、Storybook をはじめとして、デザインシステムに不可欠なツールをセットアップしていきます。このガイドの目的はプロフェッショナルチームがどのようにデザインシステムをビルドするかを示すことにありますので、コードの衛生管理や、Storybook の手軽なアドオン、ディレクトリー構成といった詳細についても注目していきましょう。
 
-![Where Storybook fits in](/design-systems-for-developers/design-system-framework-storybook.jpg)
+![Storybook の場所](/design-systems-for-developers/design-system-framework-storybook.jpg)
 
-## Code formatting and linting for hygiene
+## フォーマットしてチェックしてコードの衛生を管理する
 
-Design systems are collaborative, so tools that fix syntax and standardize formatting serve to improve contribution quality. Enforcing code consistency with tooling is much less work than policing code by hand, a benefit for the resourceful design system author.
+デザインシステムは共同作業です。そのため、構文を修正し標準的なフォーマットに整形するツールが、品質を向上に役立ちます。ツールによってコードの一貫性を保つ方が、手作業でポリシーを守るよりも労力がかかりませんので、デザインシステムの作者にとってメリットがあります。
 
-We’ll use VSCode as our editor in this tutorial but the same idea can be applied to all modern editors like Atom, Sublime, or IntelliJ.
+このチュートリアルでは VSCode をエディターとして使用しますが、同じことは Atom、Sublime、InttelliJ といったモダンなエディターでもできるでしょう。
 
-If we add Prettier to our project and set our editor up correctly, we should obtain consistent formatting without having to think much about it:
+Prettier をプロジェクトに導入し、エディターを正しく設定すれば、それほど難しくなく、一貫性のあるフォーマットを実現できます:
 
 ```shell
 yarn add --dev prettier
 ```
 
-If you are using Prettier for the first time, you may need to set it up for your editor. In VSCode, install the Prettier addon:
+初めて Prettier を使用する場合、エディターに設定が必要です。VSCode では Prettier アドオンをインストールします:
 
-![Prettier addon for VSCode](/design-systems-for-developers/prettier-addon.png)
+![VSCode の Prettier アドオン](/design-systems-for-developers/prettier-addon.png)
 
-Enable the Format on Save `editor.formatOnSave` if you haven’t done so already. Once you’ve installed Prettier, you should find that it auto-formats your code whenever you save a file.
+保存時にフォーマットする (`editor.formatOnSave`) オプションを有効にしてください。Prettier をインストールすれば、ファイルを保存するたびに自動でフォーマットされます。
 
-## Install Storybook
+## Storybook をインストールする
 
-Storybook is the industry-standard [component explorer](https://blog.hichroma.com/the-crucial-tool-for-modern-frontend-engineers-fb849b06187a) for developing UI components in isolation. Since design systems focus on UI components, Storybook is the ideal tool for the use case. We’ll rely on these features:
+Storybook は業界標準のコンポーネントを独立した環境で開発するための[コンポーネントエクスプローラー](https://blog.hichroma.com/the-crucial-tool-for-modern-frontend-engineers-fb849b06187a)です。デザインシステムは UI コンポーネントにフォーカスしているので、Storybook は理想的なツールです。Storybook には以下の機能があります:
 
-- 📕Catalog UI components
-- 📄Save component variations as stories
-- ⚡️Developer experience tooling like Hot Module Reloading
-- 🛠Supports many view layers including React
+- 📕UI コンポーネントをカタログ化する
+- 📄 コンポーネントの多様性をストーリーとして保存する
+- ⚡️Hot Module Reloading を代表とする開発エクスペリエンス
+- 🛠React など、多くのビュー層フレームワーク・ライブラリーへの対応
 
-Install and run Storybook
+それでは Storybook をインストールして実行します。
 
 ```shell
 npx -p @storybook/cli sb init
 yarn storybook
 ```
 
-You should see this:
+次のようになれば成功です:
 
-![Initial Storybook UI](/design-systems-for-developers/storybook-initial-6-0.png)
+![最初の Storybook の UI](/design-systems-for-developers/storybook-initial-6-0.png)
 
-Nice, we’ve set up a component explorer!
+コンポーネントエクスプローラーのセットアップが完了しました！
 
-Every time you install Storybook into an application it will add some examples inside the `stories` folder. If you want, take some time and explore them. But we won't be needing them for our design system, so it's safe to delete the `stories` directory.
+Storybook をアプリケーションにインストールする度に `stories` フォルダーにサンプルが追加されます。時間があれば見てみるのもいいでしょう。けれど、これから作るデザインシステムには不要なので `stories` フォルダーは削除しても問題ありません。
 
-Now your Storybook should look like this (notice that the font styles are a little off, for instance see the "Avatar: Initials" story):
+これで Storybook は以下の次のようになっていることでしょう (フォントのスタイルが少しずれていることに注目してください。「Avatar: Initials」ストーリーがその例です):
 
 <video autoPlay muted playsInline loop>
   <source
@@ -60,9 +60,9 @@ Now your Storybook should look like this (notice that the font styles are a litt
   />
 </video>
 
-#### Add global styles
+#### グローバルなスタイルを追加する
 
-Our design system requires some global styles (a CSS reset) to be applied to the document for components to be rendered correctly. The styles can be added easily via a Styled Components global style tag. Adjust your global styles, located in `src/shared/global.js` to the following:
+このデザインシステムにはコンポーネントのドキュメントを正しく描画するためにグローバルなスタイル (CSS リセット) を適用する必要があります。それには styled-components の `GlobalStyle` タグを使用することで簡単に追加できます。`src/shared/global.js` にあるグローバルなスタイルを以下のように変更してください:
 
 ```javascript
 // src/shared/global.js
@@ -83,7 +83,7 @@ export const GlobalStyle = createGlobalStyle`
 `;
 ```
 
-To use the `GlobalStyle` “component” in Storybook, we can make use of a [decorator](https://storybook.js.org/docs/react/writing-stories/decorators) (a component wrapper). In an app we’d place that component in the top-level app layout, but in Storybook we wrap all stories in it using the preview config file [`.storybook/preview.js`](https://storybook.js.org/docs/react/configure/overview#configure-story-rendering).
+`GlobalStyle` 「コンポーネント」を Storybook で使用するには、[デコレーター (decorator)](https://storybook.js.org/docs/react/writing-stories/decorators) (コンポーネントのラッパー) を使います。アプリケーションではトップレベルのレイアウトに配置しますが、Storybook ではプレビュー設定ファイル [`.storybook/preview.js`](https://storybook.js.org/docs/react/configure/overview#configure-story-rendering) を使用し、全てのストーリーをグローバルなスタイルを適用するデコレーターでラップします。
 
 ```javascript
 // .storybook/preview.js
@@ -107,31 +107,31 @@ export const parameters = {
 };
 ```
 
-The decorator will ensure the `GlobalStyle` is rendered no matter which story is selected.
+上記のデコレーターにより `GlobalStyle` がどのストーリーを選択した場合でも描画されるようになります。
 
-<div class="aside">The <code><></code> in the decorator is not a typo -- it’s a <a href="https://reactjs.org/docs/fragments.html">React Fragment</a> that we use here to avoid adding an unnecessary extra HTML tag to our output.</div>
+<div class="aside">デコレーターの <code><></code> はミスタイプではありません。これは <a href="https://reactjs.org/docs/fragments.html">React Fragment</a> で、不要な HTML タグが出力されるのを避けるために使用しています。</div>
 
-#### Add font tag
+#### font タグを追加する
 
-Our design system also relies on the font Nunito Sans to be loaded into the app. The way to achieve that in an app depends on the app framework (read more about it [here](https://github.com/storybookjs/design-system#font-loading)), but in Storybook the easiest way to achieve that is to use [`.storybook/preview-head.html`](https://storybook.js.org/docs/react/configure/story-rendering#adding-to-head) to add a `<link>` tag directly to the `<head>` of the page:
+このデザインシステムでは Nuito Sans というフォントにも依存しています。フォントをアプリケーションに導入する方法はフレームワークによって異なります (詳細については[こちら](https://github.com/storybookjs/design-system#font-loading)を参照してください) が、Storybook で最も簡単な方法は [`.storybook/preview-head.html`](https://storybook.js.org/docs/react/configure/story-rendering#adding-to-head) を使用してページの `<head>` に直接 `<link>` タグを追加する方法です。
 
 ```html
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,700,800,900" />
 ```
 
-Your Storybook should now look like this. Notice the “T” is sans-serif because we added global font styles.
+これで Storybook は以下のようになるでしょう。グローバルなフォントスタイルを追加したので「T」がサンセリフで表示されていることに注目してください。
 
-![Storybook with global styles loaded](/design-systems-for-developers/storybook-global-styles-6-0.png)
+![グローバルなスタイルが読み込まれた Storybook](/design-systems-for-developers/storybook-global-styles-6-0.png)
 
-## Supercharge Storybook with addons
+## Storybook をアドオンで加速させる
 
-Storybook includes a powerful [addon ecosystem](https://storybook.js.org/addons) created by a massive community. For the pragmatic developer, it’s easier to build our workflow using the ecosystem instead of creating custom tooling ourselves (which can be time-consuming).
+Storybook にはコミュニティによって作成された強力な[アドオンのエコシステム](https://storybook.js.org/addons)があります。実際の開発者にとって、自分たちで (とても時間がかかるかもしれない) カスタムツールを作成するよりもこのエコシステムを使用してワークフローを作成する方が簡単です。
 
-<h4>Actions addon to verify interactivity</h4>
+<h4>アクションアドオンを用いて作用を検証する</h4>
 
-The [actions addon](https://storybook.js.org/docs/react/essentials/actions) gives you UI feedback in Storybook when an action is performed on an interactive element like a Button or Link. Actions comes installed in Storybook by default and you use it simply by passing an “action” as a callback prop to a component.
+[アクションアドオン](https://storybook.js.org/docs/react/essentials/actions) は Button や Link といった対話的な要素に対してアクションが実行された際に Storybook 上に UI フィードバックを提供します。アクションアドオンは Storybook にデフォルトでインストールされているので、コンポーネントのコールバック用の prop に「action」を渡すだけで使用できます。
 
-Let’s see how to use it in our Button element, which optionally takes a wrapper component to respond to clicks. We have a story that passes an action to that wrapper:
+アクションアドオンが Button 要素でどのように使われているか見てみましょう。Button 要素ではクリックに反応するラッパーコンポーネントをオプションとして引き受けます。そのラッパーにアクションを渡しているストーリーです:
 
 ```javascript
 // src/Button.stories.js
@@ -158,13 +158,13 @@ export const buttonWrapper = (args) => (
   />
 </video>
 
-<h4>Controls to stress test components</h4>
+<h4>コンポーネントの負荷テストをするためのコントロールアドオン</h4>
 
-Fresh installs of Storybook include the [Controls addon](https://storybook.js.org/docs/react/essentials/controls), it's already configured out of the box.
+Storybook を初めてインストールすると[コントロールアドオン](https://storybook.js.org/docs/react/essentials/controls)が含まれており、すぐに使えるように設定済みです。
 
-It allows you to interact with component inputs (props) dynamically in the Storybook UI. You can supply multiple values to a component prop through [arguments](https://storybook.js.org/docs/react/writing-stories/args) (or args for short) and adjust them through the UI. This helps design systems creators stress test component inputs (props) by adjusting the argument's values. It also gives design systems consumers the ability to try components before integrating them, so they can understand how each input (prop) affects the component.
+コントロールアドオンを使用することで、動的にコンポーネントへの入力 (props) を変更することができるようになります。[Args](https://storybook.js.org/docs/react/writing-stories/args) を使用することでコンポーネントの props に複数の値を UI を使って提供することができます。また、デザインシステムの使用者が導入する前にコンポーネントを試すことができ、各入力 (props) がどのようにコンポーネントに影響するかが理解できます。
 
-Let's see how they work, by adding a new story in the `Avatar` component, located in `src/Avatar.stories.js`:
+`src/Avatar.stories.js` の `Avatar` コンポーネントに新しいストーリーを追加して、どのように機能するか見てみましょう:
 
 ```javascript
 // src/Avatar.stories.js
@@ -185,7 +185,7 @@ Controls.args = {
 };
 ```
 
-Notice the Controls tab in the addon panel. Controls automatically generates graphical UI to adjust props. For instance, the “size” select element allows us to cycle through the supported Avatar sizes `tiny`, `small`, `medium`, and `large`. The same was applied to the remainder component's props (“loading”,“username” and “src”). This allows us to create a user-friendly way to stress test components.
+アドオンパネルの Controls タブに注目してください。コントロールアドオンは props を調整できるように画面上に UI を自動的に生成します。例えば、「size」の select 要素では `tiny`、`small`、`medium`、`large` といった Avatar で使用可能なサイズを選んでいくことができます。コンポーネントの残りの props (「loading」、「username」、「src」) も同様です。この機能により、コンポーネントに対する負荷テストをお手軽に実施できます。
 
 <video autoPlay muted playsInline loop>
   <source
@@ -194,16 +194,16 @@ Notice the Controls tab in the addon panel. Controls automatically generates gra
   />
 </video>
 
-That said, Controls don’t replace stories. They are great for exploring the edge cases of the components. Stories are used for showcasing the intended cases.
+とはいえ、コントロールアドオンがストーリーを置き換えることにはなりません。コントロールアドオンはコンポーネントのエッジケースを見つけるのには最高であり、ストーリーはそういった条件における見本として使用します。
 
-We'll visit the Accessibility and Docs addons in later chapters.
+アドオンについては、アクセシビリティアドオンとドキュメントアドオンを後の章で見ることにしましょう。
 
-> “Storybook is a powerful frontend workshop environment tool that allows teams to design, build, and organize UI components (and even full screens!) without getting tripped up over business logic and plumbing.” – Brad Frost, Author of Atomic Design
+> 「Storybook は強力なフロントエンドの作業環境を提供するツールで、チームがビジネスロジックや配管につまづくことなく UI コンポーネントを (フルスクリーンで！) デザインし、製造し、組み合わせられるようにしてくれます。」 – Atomic Design の著者 Brad Frost
 
-## Learn how to automate maintenance
+## 自動的にメンテナンスする方法を学ぶ
 
-Now that our design system components are in Storybook, we've taken one more step to create a industry-standard design system. Now it's a good time to commit our work to our remote repository. Then we can start thinking about how we setup the automated tooling that streamlines ongoing maintenance.
+これでデザインシステムが Storybook にできたので、業界標準のデザインシステムを作るもう一歩を踏み出しました。リモートリポジトリ―にコミットする良いタイミングでしょう。そうすれば、メンテナンスを継続的に合理化していく自動ツールのセットアップ方法を考えていくことができます。
 
-A design system, like all software, should evolve. The challenge is to ensure UI components continue to look and feel as intended as the design system grows.
+デザインシステムは、他のソフトウェアと同様に、進化していかなければなりません。デザインシステムが成長しても、UI コンポーネントの見た目と使い勝手が意図通りであることを確実にすることが挑戦です。
 
-In chapter 4 we’ll learn how to set up continuous integration and auto-publish the design system online for collaboration.
+第 4 章では、継続的インテグレーションのセットアップする方法と、デザインシステムを協業のために自動的に公開する方法学びます。
