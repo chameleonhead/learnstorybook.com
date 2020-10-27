@@ -1,29 +1,29 @@
 ---
-title: 'Test to maintain quality'
-tocTitle: 'Test'
-description: 'How to test design system appearance, functionality, and accessibility'
+title: '品質を保つためにテストする'
+tocTitle: 'テスト'
+description: 'デザインシステムの見た目、機能、アクセシビリティをテストする方法'
 commit: 5b71208
 ---
 
-In chapter 5, we automate design system testing to prevent UI bugs. This chapter dives into what characteristics of UI components warrant testing and potential pitfalls to avoid. We researched professional teams at Wave, BBC, and Salesforce to land on a test strategy that balances comprehensive coverage, straightforward setup, and low maintenance.
+第 5 章では、UI バグを防ぐためにデザインシステムのテストを自動化します。この章では UI コンポーネントのどの特性がテストを保証するか、また避けるべき落とし穴について深く掘り下げていきます。包括的なカバレージ、簡単なセットアップ、保守容易性のバランスをとるテスト戦略に着手するため、Wave、BBC、Salesforce といったプロフェッショナルのチームを調べました。
 
 <img src="/design-systems-for-developers/ui-component.png" width="250">
 
-## Fundamentals of UI component testing
+## UI コンポーネントテストの基礎
 
-Before we begin, let’s figure out what makes sense to test. Design systems are composed of UI components. Each UI component includes stories (permutations) that describe the intended look and feel given a set of inputs (props). Stories are then rendered by a browser or device for the end-user.
+テストを始める前に、何をテストするべきかを洗い出してみましょう。デザインシステムは UI コンポーネントから構成されています。それぞれの UI コンポーネントは与えられた入力 (props) に対応するルックアンドフィールを説明するストーリーを含んでいます。ストーリーはさらにエンドユーザーのブラウザーやデバイスで描画されます。
 
-![Component states are combinatorial](/design-systems-for-developers/component-test-cases.png)
+![コンポーネントの状態が組み合わされる](/design-systems-for-developers/component-test-cases.png)
 
-Whoa! As you can see, one component contains many states. Multiply the states by the number of design system components and you can see why keeping track of them all is a Sisyphean task. In reality, it’s unsustainable to review each experience by hand, especially as the design system grows.
+ご覧のようにあるコンポーネントにはたくさんの状態があります。その状態にデザインシステムのコンポーネントの数を掛けると、なぜそのすべてを追跡していくことが果てしなく無駄な仕事なのかわかりますよね。実際には、手動で全てをレビューしていくことは継続可能ではありません。特にデザインシステムが成長するときには。
 
-All the more reason to set up automated testing **now** to save work in the **future**.
+**今**自動テストをセットアップする最大の理由は**未来の**作業を楽にするためなのです。
 
-## Prepare to test
+## テストの用意
 
-I surveyed 4 frontend teams in a [previous article](https://blog.hichroma.com/the-delightful-storybook-workflow-b322b76fd07) about professional Storybook workflows. They agreed on these best practices for writing stories to make testing easy and comprehensive.
+Storybook のワークフローに関する[以前の記事](https://blog.hichroma.com/the-delightful-storybook-workflow-b322b76fd07)を 4 つのフロントエンドチームに感想を聞きました。そして、ストーリーを書いて、テストを簡単でわかりやすくするための以下のベストプラクティスに同意を得ました。
 
-**Articulate supported component states** as stories to clarify which combinations of inputs yields a given state. Ruthlessly omit unsupported states to reduce noise.
+**サポートされているコンポーネントの状態を明確にする**: ストーリーがどういった入力の組み合わせでその状態を作り出すのかを明確にする。サポートされていない状態を容赦なく省略して、ノイズを減らします。
 
 **Render components consistently** to mitigate variability that can be triggered by randomized (Math.random) or relative (Date.now) inputs.
 
