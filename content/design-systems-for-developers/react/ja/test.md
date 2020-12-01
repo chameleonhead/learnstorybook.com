@@ -23,46 +23,47 @@ commit: 5b71208
 
 Storybook のワークフローに関する[以前の記事](https://blog.hichroma.com/the-delightful-storybook-workflow-b322b76fd07)を 4 つのフロントエンドチームに感想を聞きました。そして、ストーリーを書いて、テストを簡単でわかりやすくするための以下のベストプラクティスに同意を得ました。
 
-**サポートされているコンポーネントの状態を明確にする**: ストーリーがどういった入力の組み合わせでその状態を作り出すのかを明確にする。サポートされていない状態を容赦なく省略して、ノイズを減らします。
+**サポートするコンポーネントの状態を明確にする**: ストーリーがどういった入力の組み合わせでその状態を作り出すのかを明確にする。サポートされていない状態を容赦なく省略して、ノイズを減らします。
 
-**Render components consistently** to mitigate variability that can be triggered by randomized (Math.random) or relative (Date.now) inputs.
+**コンポーネントの描画を一貫させる**: ランダム性 (Math.random の使用) や相対性 (Date.now の使用) のある入力により引き起こされる変動を緩和します。
 
-> “The best kind of stories allow you to visualize all of the states your component could experience in the wild” – Tim Hingston, Tech lead at Apollo GraphQL
+> 「よいストーリーはコンポーネントが野生に出て経験する状態を全て視覚化することが出来ます。」 – Tim Hingston, Tech lead at Apollo GraphQL
 
-## Visual test appearance
+## 見た目をビジュアルテストする
 
-Design systems contain presentational UI components, which are inherently visual. Visual tests validate the visual aspects of the rendered UI.
+デザインシステムにはプレゼンテーショナルコンポーネントが含まれており、プレゼンテーショナルコンポーネントは本質的に視覚的です。ビジュアルテストでは視覚的な視点から描画された UI を検証します。
 
-Visual tests capture an image of every UI component in a consistent browser environment. New screenshots are automatically compared to previously accepted baseline screenshots. When there are visual differences, you get notified.
+ビジュアルテストでは全ての UI コンポーネントの画像を一貫したブラウザーの環境で取得します。新しいスクリーンショットは自動的に前回承認された基準となるスクリーンショットと比較され、もし視覚的な差異があれば、通知されます。
 
-![Visual test components](/design-systems-for-developers/component-visual-testing.gif)
+![コンポーネントをビジュアルテストする](/design-systems-for-developers/component-visual-testing.gif)
 
-If you’re building a modern UI, visual testing saves your frontend team from time-consuming manual review and prevents expensive UI regressions.
+もしモダンな UI を作っているのなら、ビジュアルテストでフロントエンドチームの時間がかかるレビューが節約でき、大規模な UI のリグレッションを予防できます。
 
-In the <a href="https://www.learnstorybook.com/design-systems-for-developers/react/en/review/#publish-storybook">previous chapter</a> we learned how to publish Storybook using [Chromatic](https://www.chromatic.com/). We added a bold red border around each `Button` component and then requested feedback from teammates.
+<a href="https://www.learnstorybook.com/design-systems-for-developers/react/ja/review/#publish-storybook">前の章</a>では、Storybook を [Chromatic](https://www.chromatic.com/) を使用して発行する方法を学びました。その際、`Button` コンポーネントに赤い太線を入れて、チームメートにレビューを依頼しました。
 
-![Button red border](/design-systems-for-developers/chromatic-button-border-change.png)
+![ボタンの赤線](/design-systems-for-developers/chromatic-button-border-change.png)
 
-Now let's see how visual testing works using Chromatic's built in [testing tools](https://www.chromatic.com/features/test). When the pull request was created, Chromatic captured images for our changes and compared them to previous versions of the same components. 3 changes were found:
+それでは、Chromatic の組み込み[テストツール](https://www.chromatic.com/features/test)を使用して、ビジュアルテストの使用方法を見ていきましょう。プルリクエストが作成されたとき、Chromatic は変更されたイメージをキャプチャーし、前回の同じコンポーネントのイメージと比較し、3 つの変更点が見つかりました。
 
-![List of checks in the pull request](/design-systems-for-developers/chromatic-list-of-checks.png)
+![プルリクエストのチェックの一覧](/design-systems-for-developers/chromatic-list-of-checks.png)
 
-Click the **🟡UI Tests** check to review them.
+レビューするため、**🟡UI Tests** チェックをクリックしてください。
 
-![Second build in Chromatic with changes](/design-systems-for-developers/chromatic-second-build-from-pr.png)
+![Chromatic 上の 2 回目のビルド (変更点あり)](/design-systems-for-developers/chromatic-second-build-from-pr.png)
 
-Review them to confirm whether they’re intentional (improvements) or unintentional (bugs). If you accept the changes, the test baselines will be updated. That means subsequent commits will be compared to the new baselines to detect bugs.
+変更が意図的 (改善) なのか意図的でない (バグ) のかをレビューで確認します。もし変更を受け入れるのであれば、テストの基準が更新されます。つまり、今後のコミットではその新しい基準イメージと比較することでバグを見つけます。
 
-![Reviewing changes in Chromatic](/design-systems-for-developers/chromatic-review-changes-pr.png)
+![Chromatic で変更点をレビューする](/design-systems-for-developers/chromatic-review-changes-pr.png)
 
-In the last chapter, our teammate did not want a red border around the `Button`'s for some reason. Deny the changes to indicate that they need to be undone.
+前回の章では、チームメートはなぜか `Button` の赤い枠を気に入りませんでした。変更点を戻すよう示すために、変更を拒否します。
 
-![Review deny in Chromatic](/design-systems-for-developers/chromatic-review-deny.png)
+![Chromatic で変更点を拒否する](/design-systems-for-developers/chromatic-review-deny.png)
 
-Undo the changes and commit again to pass your visual tests again.
+変更を取り消して、再度コミットすることで、ビジュアルテストをパスします。
 
-## Unit test functionality
+## 単体テストの役割
 
+単体テストでは
 Unit tests verify whether the UI code returns the correct output given a controlled input. They live alongside the component and help you validate specific functionality.
 
 Everything is a component in modern view layers like React, Vue, and Angular. Components encapsulate diverse functionality from modest buttons to elaborate date pickers. The more intricate a component, the trickier it becomes to capture nuances using visual testing alone. That’s why we need unit tests.
